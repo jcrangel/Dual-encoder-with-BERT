@@ -14,6 +14,9 @@ from KBentities_encoder import InKBAllEntitiesEncoder
 from evaluator import BLINKBiEncoderTopXRetriever, DevandTest_BLINKBiEncoder_IterateEvaluator
 import copy
 import torch
+from allennlp.models.archival import archive_model, load_archive
+import os
+
 CANONICAL_AND_DEF_CONNECTTOKEN = '[unused3]'
 
 def main():
@@ -65,6 +68,17 @@ def main():
         trainer.train()
     else:
         print('\n==Skip Biencoder training==\n')
+
+    # Save the model
+    serialization_dir = 'model'
+    config_file = os.path.join(serialization_dir, 'config.json')
+    vocabulary_dir = os.path.join(serialization_dir, 'vocabulary')
+    weights_file = os.path.join(serialization_dir, 'weights.th')
+    model_pytorch_file = os.path.join(serialization_dir, 'model.th')
+    os.makedirs(serialization_dir, exist_ok=True)
+    #params.to_file(config_file)
+    #vocab.save_to_files(vocabulary_dir)
+    torch.save(model, model_pytorch_file)
 
     with torch.no_grad():
         model.eval()
